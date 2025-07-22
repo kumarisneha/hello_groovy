@@ -5,7 +5,7 @@ pipeline {
             steps {
                 jobDsl scriptText: '''
 
-                    def baseFolder = "my-root-automation-folder/automated-jobs"
+                    def baseFolder = "automated-jobs"
 
                     folder(baseFolder) {
                         displayName("Automated Jobs")
