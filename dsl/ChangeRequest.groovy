@@ -6,7 +6,7 @@ folder(baseFolder) {
 }
 
 def jobs = [
-    ["name": "job-daily",  "schedule": "H 2 * * *"],
+    ["name": "job-daily",  "schedule": "H/5 * * * *"],
     ["name": "job-hourly", "schedule": "H * * * *"]
 ]
 

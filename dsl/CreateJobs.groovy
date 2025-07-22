@@ -8,7 +8,7 @@ folder(baseFolder) {
 // Define list of job names and schedules
 def jobs = [
     [ name: "sayhello-daily",  schedule: "H 2 * * *" ],  // Runs daily at 2 AM
-    [ name: "sayhello-hourly", schedule: "H * * * *" ]   // Runs every hour
+    [ name: "sayhello-hourly", schedule: "H/5 * * * *" ]   // Runs every hour
 ]
 
 // Loop through each job and define a pipeline
