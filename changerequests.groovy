@@ -5,7 +5,7 @@ pipeline {
             steps {
                 jobDsl scriptText: '''
 
-                    def baseFolder = "my-root-automation-folder/automated-jobs"
+                    def baseFolder = "automated-jobs"
 
                     folder(baseFolder) {
                         displayName("Automated Jobs")
@@ -14,7 +14,7 @@ pipeline {
 
                     def change_requests_properties = [
                         ["name": "job-daily",     "schedule": "H 2 * * *"], // every day at 2AM
-                        ["name": "job-hourly",    "schedule": "H/6 * * * *"], // every hour
+                        ["name": "job-hourly",    "schedule": "H * * * *"], // every hour
                     ]
 
                     def regions = [
@@ -63,38 +63,3 @@ pipeline {
         }
     }
 }
-
-
-
-// def baseFolder = "automated-jobs"
-
-// folder(baseFolder) {
-//     displayName("Automated Jobs")
-//     description("Jobs created with Job DSL")
-// }
-
-// def jobs = [
-//     ["name": "job-daily",  "schedule": "H/5 * * * *"],
-//     ["name": "job-hourly", "schedule": "H * * * *"]
-// ]
-
-// jobs.each { job ->
-//     pipelineJob("${baseFolder}/${job.name}") {
-//         description("Automated job: ${job.name}")
-//         triggers { cron(job.schedule) }
-//         definition {
-//             cpsScm {
-//                 scm {
-//                     git {
-//                         remote {
-//                             url("git@github.com:kumarisneha/hello_groovy.git")
-//                             credentials("git-ssh-creds")  // Jenkins SSH credential ID
-//                         }
-//                         branches('*/master')
-//                     }
-//                 }
-//                 scriptPath("Jenkinsfile")
-//             }
-//         }
-//     }
-// }
