@@ -1,3 +1,5 @@
+@Library('shared-lib') _  // Refer to your shared lib ID in Jenkins config
+
 pipeline {
     agent any
     stages {
