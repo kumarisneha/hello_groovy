@@ -12,7 +12,7 @@ pipeline {
 
         stage('Generate DSL Jobs') {
             steps {
-                jobDsl targets: 'dsl/ChangeRequest.groovy'
+                jobDsl targets: 'changerequests.groovy'
             }
         }
     }

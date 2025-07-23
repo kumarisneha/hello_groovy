@@ -1,100 +1,32 @@
-pipeline {
-    agent any
-    stages {
-        stage('Generate Jobs') {
-            steps {
-                jobDsl scriptText: '''
+def baseFolder = "automated-jobs"
 
-                    def baseFolder = "my-root-automation-folder/automated-jobs"
+folder(baseFolder) {
+    displayName("Automated Jobs")
+    description("Jobs created with Job DSL")
+}
 
-                    folder(baseFolder) {
-                        displayName("Automated Jobs")
-                        description("All cron-based automated pipeline jobs")
-                    }
+def jobs = [
+    ["name": "job-daily",  "schedule": "H/5 * * * *"],
+    ["name": "job-hourly", "schedule": "H * * * *"]
+]
 
-                    def change_requests_properties = [
-                        ["name": "job-daily",     "schedule": "H 2 * * *"], // every day at 2AM
-                        ["name": "job-hourly",    "schedule": "H/6 * * * *"], // every hour
-                    ]
-
-                    def regions = [
-                        'wdc',
-                        'osa',
-                        'mad'
-                    ]
-                    
-                    regions.each { region ->
-                        
-                        change_requests_properties.each { job ->
-
-                            folder("${baseFolder}/${region}") {
-                                displayName("${region}")
-                                description("All cron-based automated pipeline jobs for ${region}")
-                            }
-                        
-                            pipelineJob("${baseFolder}/${region}/scheduled-python-job-'${job.name}'") {
-                                
-                                description("This pipeline job clones a repo via SSH, sets up cron trigger, and runs a Python script")
-                                
-                                triggers {
-                                    cron(job.schedule)
-                                }
-                                
-                                definition {
-                                    cpsScm {
-                                        scm {
-                                            git {
-                                                remote {
-                                                    url("git@github.com:kumarisneha/hello_groovy.git")
-                                                    credentials("git-ssh-creds")
-                                                }
-                                                branches("*/master")
-                                            }
-                                        }
-                                        scriptPath("Jenkinsfile")
-                                    }
-                                }
-                            }
+jobs.each { job ->
+    pipelineJob("${baseFolder}/${job.name}") {
+        description("Automated job: ${job.name}")
+        triggers { cron(job.schedule) }
+        definition {
+            cpsScm {
+                scm {
+                    git {
+                        remote {
+                            url("git@github.com:kumarisneha/hello_groovy.git")
+                            credentials("git-ssh-creds")  // Jenkins SSH credential ID
                         }
+                        branches('*/master')
                     }
-
-                '''
+                }
+                scriptPath("Jenkinsfile")
             }
         }
     }
 }
-
-
-
-// def baseFolder = "automated-jobs"
-
-// folder(baseFolder) {
-//     displayName("Automated Jobs")
-//     description("Jobs created with Job DSL")
-// }
-
-// def jobs = [
-//     ["name": "job-daily",  "schedule": "H/5 * * * *"],
-//     ["name": "job-hourly", "schedule": "H * * * *"]
-// ]
-
-// jobs.each { job ->
-//     pipelineJob("${baseFolder}/${job.name}") {
-//         description("Automated job: ${job.name}")
-//         triggers { cron(job.schedule) }
-//         definition {
-//             cpsScm {
-//                 scm {
-//                     git {
-//                         remote {
-//                             url("git@github.com:kumarisneha/hello_groovy.git")
-//                             credentials("git-ssh-creds")  // Jenkins SSH credential ID
-//                         }
-//                         branches('*/master')
-//                     }
-//                 }
-//                 scriptPath("Jenkinsfile")
-//             }
-//         }
-//     }
-// }
